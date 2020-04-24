@@ -28,7 +28,7 @@ h3 {
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-auto-rows: minmax(250px, auto);
+  grid-auto-rows: auto;
   grid-gap: 10px;
   grid-template-areas: 
   "header header header header header header"
@@ -44,7 +44,7 @@ h3 {
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    grid-auto-rows: minmax(250px, auto);
+    grid-auto-rows: auto;
     grid-gap: 10px;
     grid-template-areas: 
     "header header header header header header"
@@ -131,6 +131,9 @@ section h2 {
 }
 
 /* ******CONTACT LIST********* */
+
+#main-section-logged-in {
+}
 
 .contact-container {
   height: auto;

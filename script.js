@@ -108,7 +108,7 @@ function renderContact(doc) {
 
   document.querySelectorAll('.contact-delete').forEach(button => {
     button.addEventListener('click', (event) => {
-      event.stopPropagation();
+      // event.stopPropagation();
 
       // 2. event target/bubbling to grab the list item id 
       let deletedListItem = event.target.parentNode.parentNode;
@@ -116,27 +116,18 @@ function renderContact(doc) {
   
       // 3. delete the selected item from the parentNode (ul)
       deletedListItem.parentNode.removeChild(deletedListItem);
+      
   
       // 4. delete the item from the database
       db.collection('contacts').doc(id).delete();
+      
     })
   })
-
 }
-
 
 // THIS MATCHES UP CORRECT DOCS WITH USERS
 auth.onAuthStateChanged(user => {
   if(user) {
-    // db.collection('contacts').get().then(snapshot => {
-    //   snapshot.docs.forEach(doc => {
-    //     if(doc.data().id === auth.currentUser.uid) {
-    //       console.log(doc.data().name);
-    //       renderContact(doc);
-    //     }
-    //   })
-    // })
-
     // real-time listener
     db.collection('contacts').onSnapshot(snapshot => {
       let changes = snapshot.docChanges();
@@ -150,6 +141,7 @@ auth.onAuthStateChanged(user => {
     return;
   }
 });
+
 
 // RESET CONTACT LIST ON LOGOUT
 
