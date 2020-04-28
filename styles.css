@@ -175,6 +175,15 @@ section h2 {
   justify-content: space-between;
 }
 
+li div {
+  color: #eb4034;
+  transition: transform 0.5s ease;
+}
+
+li div:hover{
+  cursor: pointer;
+  transform: scale(1.5);
+}
 
 
 
@@ -260,8 +269,6 @@ input {
   cursor: pointer;
   background: #dfe8e2;
 }
-
-
 
 
 /* EDIT Button from modal */

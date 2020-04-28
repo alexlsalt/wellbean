@@ -1,8 +1,9 @@
+
 const loginButton = document.querySelector('#login__btn');
 const signupButton = document.querySelector('#signup__btn');
 
 
-//////////////// LOGIN
+//////////////// LOGIN 
 const loginModalAppear = () => {
   document.querySelector('.login').style.display = 'block';
   document.querySelector('#content').style.opacity = 0.6;
@@ -38,13 +39,7 @@ const signupModalAppear = () => {
 signupButton.addEventListener('click', signupModalAppear);
 
 
-
-    ///////////////////////////////
-
-    //////////////// ADDING CONTACT TO LIST 
-
-// get refs from UI input
-
+//////////////// ADDING CONTACT TO LIST 
 const contactForm = document.querySelector('#new-contact-form');
 
 contactForm.addEventListener('submit', event => {
@@ -61,6 +56,7 @@ contactForm.addEventListener('submit', event => {
     data['name'] = contactName;
     data['frequency'] = contactFrequency;
     data['id'] = ID;
+    data['created_on'] = Date.now();
 
     db.collection('contacts').doc().set(data).then(() => {
       console.log('Entered into database');
@@ -72,58 +68,12 @@ contactForm.addEventListener('submit', event => {
     alert('Please provide both a name and an alert frequency.');
   }
 
+  // Put the focus back on name input after submit
+  document.querySelector('#newContact__input').focus();
 
 });
 
-
-// create element and render new contact on list
-
 const contactList = document.querySelector('.contact-list');
-
-function renderContact(doc) {
-  let li = document.createElement('li');
-  let name = document.createElement('span');
-  let frequency = document.createElement('span');
-
-
-  // Add in edit functionality at a later date (add to div HTML below) -->
-  // <i class="fas fa-edit"></i>
-
-  let div = '<div class="edit-exit-icons"></i><i class="fas fa-times x contact-delete"></i></div>'
-
-  li.setAttribute('data-id', doc.id);
-
-  name.textContent = doc.data().name;
-  frequency.textContent = doc.data().frequency;
-
-  li.appendChild(name);
-  li.appendChild(frequency);
-
-  li.insertAdjacentHTML('beforeend', div);
-  contactList.appendChild(li);
-
-  //////////////// DELETING CONTACTS FROM LIST
-
-  // 1. add event listener to delete button on list item (must be inside function because technically these li's don't exist yet on DOM)
-
-  document.querySelectorAll('.contact-delete').forEach(button => {
-    button.addEventListener('click', (event) => {
-      // event.stopPropagation();
-
-      // 2. event target/bubbling to grab the list item id 
-      let deletedListItem = event.target.parentNode.parentNode;
-      let id = deletedListItem.getAttribute('data-id');
-  
-      // 3. delete the selected item from the parentNode (ul)
-      deletedListItem.parentNode.removeChild(deletedListItem);
-      
-  
-      // 4. delete the item from the database
-      db.collection('contacts').doc(id).delete();
-      
-    })
-  })
-}
 
 // THIS MATCHES UP CORRECT DOCS WITH USERS
 auth.onAuthStateChanged(user => {
@@ -134,13 +84,47 @@ auth.onAuthStateChanged(user => {
       changes.forEach(change => {
         if (change.type === 'added' && change.doc.data().id === auth.currentUser.uid) {
           renderContact(change.doc);
-        } 
+        } else if (change.type === 'removed') {
+          let li = document.getElementById(change.doc.id);
+          contactList.removeChild(li);
+        }
       })
     })
   } else {
     return;
   }
-});
+}); 
+
+// create element and render new contact on list
+
+function renderContact(doc) {
+  let li = document.createElement('li');
+  let name = document.createElement('span');
+  let frequency = document.createElement('span');
+  let cross = document.createElement('div');
+
+  li.setAttribute('id', doc.id);
+
+  name.textContent = doc.data().name;
+  frequency.textContent = doc.data().frequency;
+  cross.textContent = 'x';
+
+  li.appendChild(name);
+  li.appendChild(frequency);
+  li.appendChild(cross);
+
+
+  contactList.appendChild(li);
+
+  // deleting data 
+  cross.addEventListener('click', e => {
+    e.stopPropagation();
+
+    let id = e.target.parentElement.getAttribute('id');
+    db.collection('contacts').doc(id).delete();
+    
+  })
+}
 
 
 // RESET CONTACT LIST ON LOGOUT
@@ -149,31 +133,27 @@ const logoutButton = document.querySelector('#logout__btn');
 
 logoutButton.addEventListener('click', event => {
   event.preventDefault();
-
   contactList.innerHTML = '';
+});
+
+
+const getUserContacts = 
+auth.onAuthStateChanged(user => {
+  if (user !== null) {
+    const currentUser = auth.currentUser;
+    console.log(currentUser);
+    db.collection('contacts').get().then(snapshot => {
+      snapshot.docs.forEach(doc => {
+        if (user.uid === doc.data().id) {
+          
+        } else {
+          return;
+        }
+      })
+    })
+  }
+  
+
 })
-///////////////////////////////
 
-
-
-
-
-
-//////////////// EDITING CONTACT AND/OR FREQUENCY
-
-// 1. Add event listener to edit icon on list item
-
-// 2. Pop up modal with form and pre-filled values for selected ID 
-
-// 3. Add a 'save changes' button with event listener
-
-// 4. on Submit, prevent default and update UI and database
-
-
-
-// const documentRef = db.collection('contacts');
-
-//   documentRef.get().then(snapshot => {
-//     const documentID = snapshot.docs[0].id;
-//     console.log(documentID);
-//   });
+exports = getUserContacts;

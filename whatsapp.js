@@ -1,15 +1,24 @@
 require('dotenv').config();
+const userContacts = require('./script');
+
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
+const myNumber = process.env.MY_WHATSAPP_NUMBER;
+const senderNumber = process.env.SENDER_NUMBER;
 
 const client = require('twilio')(accountSid, authToken);
 
 // Create the whatsapp message
-client.messages.create({
-	    to: "whatsapp:" + '+19495790294',
-	    from: "whatsapp:" + '+14155238886',
-	    body: "Hey there! Consider reaching out today to Graci, Nana-B, and Dad. Stay well. Love, wellbean"
+
+	client.messages.create({
+		to: "whatsapp:" + `${myNumber}`,
+		from: "whatsapp:" + `${senderNumber}`,
+		body: `Hello! Consider sending ${name} a message`
 	}).then(message => {
-	    callback(null, message.sid);
+		callback(null, message.sid);
 	}).catch(err => callback(err));
+
+
+
+
