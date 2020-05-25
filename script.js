@@ -38,6 +38,17 @@ const signupModalAppear = () => {
 
 signupButton.addEventListener('click', signupModalAppear);
 
+//////////////// DISPLAY CURRENT CONTACTS FROM DATABASE (only need to do once to refresh location)
+
+const displayContactBtn = document.querySelector('#display-contacts-btn');
+displayContactBtn.addEventListener('click', e => {
+
+  // Reload location (to pull contacts from database)
+  location.reload();
+  return false;
+
+})
+
 
 //////////////// ADDING CONTACT TO LIST 
 const contactForm = document.querySelector('#new-contact-form');
@@ -73,29 +84,8 @@ contactForm.addEventListener('submit', event => {
 
 });
 
+/////////////// CREATE NEW CONTACT AND RENDER ON LIST
 const contactList = document.querySelector('.contact-list');
-
-// THIS MATCHES UP CORRECT DOCS WITH USERS
-auth.onAuthStateChanged(user => {
-  if(user) {
-    // real-time listener
-    db.collection('contacts').onSnapshot(snapshot => {
-      let changes = snapshot.docChanges();
-      changes.forEach(change => {
-        if (change.type === 'added' && change.doc.data().id === auth.currentUser.uid) {
-          renderContact(change.doc);
-        } else if (change.type === 'removed') {
-          let li = document.getElementById(change.doc.id);
-          contactList.removeChild(li);
-        }
-      })
-    })
-  } else {
-    return;
-  }
-}); 
-
-// create element and render new contact on list
 
 function renderContact(doc) {
   let li = document.createElement('li');
@@ -113,7 +103,6 @@ function renderContact(doc) {
   li.appendChild(frequency);
   li.appendChild(cross);
 
-
   contactList.appendChild(li);
 
   // deleting data 
@@ -127,7 +116,22 @@ function renderContact(doc) {
 }
 
 
-// RESET CONTACT LIST ON LOGOUT
+////////// Render contacts as soon as they're added to the database
+
+db.collection('contacts').onSnapshot(snapshot => {
+  let changes = snapshot.docChanges();
+  changes.forEach(change => {
+    if (change.type === 'added' && change.doc.data().id === auth.currentUser.uid) {
+      renderContact(change.doc);
+    } else if (change.type === 'removed') {
+      let li = document.getElementById(change.doc.id);
+      contactList.removeChild(li);
+    }
+  })
+})
+
+
+//////////// RESET CONTACT LIST ON LOGOUT
 
 const logoutButton = document.querySelector('#logout__btn');
 
@@ -135,25 +139,32 @@ logoutButton.addEventListener('click', event => {
   event.preventDefault();
   contactList.innerHTML = '';
 });
+///////////// Color change timing logic
 
 
-const getUserContacts = 
 auth.onAuthStateChanged(user => {
-  if (user !== null) {
-    const currentUser = auth.currentUser;
-    console.log(currentUser);
-    db.collection('contacts').get().then(snapshot => {
-      snapshot.docs.forEach(doc => {
-        if (user.uid === doc.data().id) {
-          
-        } else {
-          return;
-        }
-      })
-    })
-  }
-  
+  if (user) {
+    let userId = auth.currentUser.uid;
+    let now = Date.now();
+    console.log(userId);
+    
+    db.collection('contacts').where('id', '==', `${userId}`).get()
+    .then(snapshot => {
+      if (snapshot.empty) {
+        console.log('No matching docs');
+      }
+    
+      snapshot.forEach(doc => {
+        let id = doc.id;
+    // Need logic to compare the now variable to the created_on property of each!!
+        console.log(doc.id, '>', doc.data().created_on);
+      
+        
+      });
+    });
 
+
+  }
 })
 
-exports = getUserContacts;
+

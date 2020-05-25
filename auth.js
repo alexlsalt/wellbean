@@ -20,7 +20,7 @@ const signupForm = document.querySelector('#signup-form');
 
 // Add event listener to submit form
 signupForm.addEventListener('submit', event => {
-  event.preventDefault();
+  event.preventDefault(); 
 
   const email = signupForm['signup-email'].value;
   const password = signupForm['signup-password'].value;

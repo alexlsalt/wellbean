@@ -251,7 +251,7 @@ input {
   background: #dfe8e2;
 }
 
-.submit__btn {
+.submit__btn, button {
   border: 3px solid #b0c6b7;
   padding: 0.5rem;
   width: 33%;
@@ -265,9 +265,14 @@ input {
   width: auto;
 }
 
-.submit__btn:hover{
+.submit__btn:hover,
+button:hover{
   cursor: pointer;
   background: #dfe8e2;
+}
+
+#display-contacts-btn {
+  margin-top: 1rem;
 }
 
 

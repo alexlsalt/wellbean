@@ -35,6 +35,7 @@
 
     <section class="logged-in">
       <div id="main-section-logged-in" class="details contact-container">
+        
         <h2>Add New Contact Reminder:</h2>
         <form type="text" id="new-contact-form">
             <div>
@@ -57,10 +58,12 @@
           
         </form>
 
-        <h2>Current Contact Settings</h2>
+        <h2 class="current-contacts">Current Contact Settings</h2>
+        
         <ul class="contact-list">
 
         </ul> 
+        <button id="display-contacts-btn">Display all contacts</button>
       </div>
 
     </section>
@@ -106,16 +109,19 @@
     </form>
   </div>
 
+
+  
+  
   <script>
     // Your web app's Firebase configuration
     var firebaseConfig = {
-      apiKey: "AIzaSyBYcyTpKnj3pT1VMjIaISUhh8c4uZLnxLU",
-      authDomain: "wellbean-c70fd.firebaseapp.com",
-      databaseURL: "https://wellbean-c70fd.firebaseio.com",
-      projectId: "wellbean-c70fd",
-      storageBucket: "wellbean-c70fd.appspot.com",
-      messagingSenderId: "699987713499",
-      appId: "1:699987713499:web:422560ab1eafc08e949bfe"
+      apiKey: "AIzaSyBriUqBY0ecyXBXjvABOCCSrApJ0cqf0pI",
+      authDomain: "wellbean-c8c29.firebaseapp.com",
+      databaseURL: "https://wellbean-c8c29.firebaseio.com",
+      projectId: "wellbean-c8c29",
+      storageBucket: "wellbean-c8c29.appspot.com",
+      messagingSenderId: "1091230125460",
+      appId: "1:1091230125460:web:f84a05944bfbeafdcd1381"
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
@@ -123,7 +129,6 @@
     // auth and database references
     const auth = firebase.auth();
     const db = firebase.firestore();
-
   </script>
   <script src="auth.js"></script>
   <script src="script.js"></script>
