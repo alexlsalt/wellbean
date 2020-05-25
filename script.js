@@ -41,13 +41,22 @@ signupButton.addEventListener('click', signupModalAppear);
 //////////////// DISPLAY CURRENT CONTACTS FROM DATABASE (only need to do once to refresh location)
 
 const displayContactBtn = document.querySelector('#display-contacts-btn');
+
 displayContactBtn.addEventListener('click', e => {
 
   // Reload location (to pull contacts from database)
   location.reload();
   return false;
 
-})
+});
+
+
+// function blinkingButton() {
+//   setInterval(() => {
+//     displayContactBtn.classList.toggle('green');
+//   }, 500)
+// }
+
 
 
 //////////////// ADDING CONTACT TO LIST 
@@ -67,7 +76,8 @@ contactForm.addEventListener('submit', event => {
     data['name'] = contactName;
     data['frequency'] = contactFrequency;
     data['id'] = ID;
-    data['created_on'] = Date.now();
+    // Milliseconds > seconds > minutes > hours
+    data['created_on'] = Date.now() / 1000 / 60 / 60;
 
     db.collection('contacts').doc().set(data).then(() => {
       console.log('Entered into database');
@@ -91,25 +101,26 @@ function renderContact(doc) {
   let li = document.createElement('li');
   let name = document.createElement('span');
   let frequency = document.createElement('span');
-  let cross = document.createElement('div');
+  let div = document.createElement('div');
 
   li.setAttribute('id', doc.id);
 
   name.textContent = doc.data().name;
   frequency.textContent = doc.data().frequency;
-  cross.textContent = 'x';
+  div.innerHTML = '<i class="fas fa-times cross"></i>';
 
   li.appendChild(name);
   li.appendChild(frequency);
-  li.appendChild(cross);
+  li.appendChild(div);
 
   contactList.appendChild(li);
 
   // deleting data 
+  let cross = document.querySelector('.cross');
   cross.addEventListener('click', e => {
     e.stopPropagation();
 
-    let id = e.target.parentElement.getAttribute('id');
+    let id = e.target.parentElement.parentElement.getAttribute('id');
     db.collection('contacts').doc(id).delete();
     
   })
@@ -139,13 +150,15 @@ logoutButton.addEventListener('click', event => {
   event.preventDefault();
   contactList.innerHTML = '';
 });
-///////////// Color change timing logic
+
+
+///////////// TIMING LOGIC: IF THE DESIGNATED NUMBER OF HOURS HAS PASSED, EACH LINE ITEM BACKGROUND COLOR WILL CHANGE TO RED
 
 
 auth.onAuthStateChanged(user => {
   if (user) {
     let userId = auth.currentUser.uid;
-    let now = Date.now();
+    let now = Date.now() / 3600000;
     console.log(userId);
     
     db.collection('contacts').where('id', '==', `${userId}`).get()
@@ -156,15 +169,70 @@ auth.onAuthStateChanged(user => {
     
       snapshot.forEach(doc => {
         let id = doc.id;
+        let createdOn = doc.data().created_on;
+        let frequency = doc.data().frequency;
     // Need logic to compare the now variable to the created_on property of each!!
-        console.log(doc.id, '>', doc.data().created_on);
+        console.log(id, '>', createdOn);
+
+        function timerExpired() {
+          document.getElementById(`${id}`).classList.add('expired');
+          document.getElementById(`${id}`).childNodes[2].insertAdjacentHTML('beforeend', '<i class="fas fa-check"></i>');
+        }
+
+        // Testing
+        // TestOne should be red at 8:44pm and then four hours from when checkmark is clicked
+        if (now - createdOn > 4 && frequency == 'Daily') {
+          timerExpired();
+        } else if (now - createdOn > 12 && frequency == 'Twice a Week') {
+          timerExpired();
+        }
       
-        
+
+        if (now - createdOn > 24 && frequency == 'Daily') {
+          timerExpired();
+        } else if (now - createdOn > 84 && frequency == 'Twice a Week') {
+          timerExpired();
+        } else if (now - createdOn > 168 && frequency == 'Weekly') {
+          timerExpired();
+        } else if (now - createdOn > 336 && frequency == 'Every Two Weeks') {
+          timerExpired();
+        } else if (now - createdOn > 720 && frequency == 'Monthly') {
+          timerExpired();
+        }      
+      });
+      /////// Resetting the interval when the checkmark is clicked by updating the created_on property in the database
+      let checkmarks = document.querySelectorAll('.fa-check');
+      checkmarks.forEach(check => {
+        check.addEventListener('click', e => {
+          e.stopPropagation();
+          let itemID = e.target.parentNode.parentNode.id;
+
+          // Need parseInt - otherwise will be updated in database as a string instead of a number
+          let now = parseInt(Date.now() / 3600000);
+
+          // Update the created_on property in Firestore so that the timing interval starts over
+          db.collection('contacts').doc(`${itemID}`).update({ created_on: now });
+
+          // Update the list/UI
+          document.getElementById(`${itemID}`).classList.remove('expired');
+          e.target.style.display = 'none';
+
+        })
       });
     });
+
+    
 
 
   }
 })
+
+
+//////////// FUNCTIONALITY FOR RESETTING EACH LIST ITEM AFTER IT EXPIRES
+// https://firebase.google.com/docs/firestore/manage-data/add-data#update-data
+// let now = Date.now();
+//db.collection('contacts').doc(`${id}`).update({created_on: `${now}`});
+
+
 
 
