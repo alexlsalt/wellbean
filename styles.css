@@ -105,6 +105,11 @@ nav li:hover {
   color: #fff;
 }
 
+.green {
+  background: #b0c6b7;
+}
+
+.expired { background: #f17970; }
 
 
 
@@ -131,9 +136,6 @@ section h2 {
 }
 
 /* ******CONTACT LIST********* */
-
-#main-section-logged-in {
-}
 
 .contact-container {
   height: auto;
@@ -175,16 +177,21 @@ section h2 {
   justify-content: space-between;
 }
 
-li div {
+.cross {
   color: #eb4034;
+  transition: transform 0.5s ease;
+  margin-right: 0.5rem;
+}
+
+.fa-check {
+  color: #b0c6b7;
   transition: transform 0.5s ease;
 }
 
-li div:hover{
+i:hover{
   cursor: pointer;
   transform: scale(1.5);
 }
-
 
 
 
@@ -275,26 +282,6 @@ button:hover{
   margin-top: 1rem;
 }
 
-
-/* EDIT Button from modal */
-
-.edit-exit-icons {
-  text-align: right;
-  margin-top: 0.75rem;
-  margin-right: 0.75rem;
-  transform: scale(0.8);
-}
-
-.fa-edit {
-  margin-right: 1rem;
-  color: #b0c6b7;
-  transition: transform 0.5s ease;
-}
-
-.fa-edit:hover{
-  cursor: pointer;
-  transform: scale(1.1);
-}
 
 /* EXIT Button from modal */
 
