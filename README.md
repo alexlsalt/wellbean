@@ -25,19 +25,19 @@ Depending on the logged-in user, the program will return only those documents in
 unique user ID (UID) that they receive at the time their account is created. In other words, upon each contact submission into the input form, the program 
 grabs the user's UID and sets a property of 'id' as that UID within the overall object of the particular contact.
 
-  const contactName = document.querySelector('#newContact__input').value;
-  const contactFrequency = document.querySelector('#newFrequency__input').value;
+    const contactName = document.querySelector('#newContact__input').value;
+    const contactFrequency = document.querySelector('#newFrequency__input').value;
 
-  const ID = auth.currentUser.uid;
+    const ID = auth.currentUser.uid;
 
-  let data = {}
+    let data = {}
 
-  if (contactName !== '' && contactFrequency !== '') {
-    data['name'] = contactName;
-    data['frequency'] = contactFrequency;
-    data['id'] = ID;
-    // Milliseconds > hours
-    data['created_on'] = Date.now() / 3600000;
+    if (contactName !== '' && contactFrequency !== '') {
+      data['name'] = contactName;
+      data['frequency'] = contactFrequency;
+      data['id'] = ID;
+      data['created_on'] = Date.now() / 3600000; // Milliseconds > hours
+
 
     db.collection('contacts').doc().set(data);
     
@@ -49,7 +49,7 @@ Each time the user logs in, another snapshot of the current time is taken (again
 program uses that in its logic to test if the time now subtracted by the created_on property is greater than a given number of hours 
 (depending on the frequency set in each contact's data object).
 
-  db.collection('contacts').where('id', '==', `${userId}`).get()
+    db.collection('contacts').where('id', '==', `${userId}`).get()
     .then(snapshot => {
       if (snapshot.empty) {
         console.log('No matching docs');
@@ -81,31 +81,28 @@ program uses that in its logic to test if the time now subtracted by the created
 
 ## Features
 
-- Use of a module pattern within app.js file to control click events and displaying new idea from an array
+- Reset function of the timer once the current timer expires
 
-        var setUpEventListeners = function() {
-            document.querySelector(DOM.newIdeaBtn).addEventListener('click', ctrlDisplayNewIdea);
-            document.querySelector('.button').addEventListener('click', subscribeClearInput);
-        };
+If the user logs in and the timing logic returns true for any of the conditions, the timerExpired() function fires to update the contact
+list on the UI. For any overdue contacts, the list item will be given a class with a red background. Also, once the timerExpired() function fires, it will also display a green checkmark on the list item for the user to click once they'd like to reset the timer (if, for example, they've reached out to their contact). 
 
-        var ctrlDisplayNewIdea = function() {
-            // 3. Get ideas from dataCtrl
-            var ideas = dataCtrl.getIdeas();
+Once the green checkmark is clicked, it will remove the class giving the list item the red background, and it will set a new created_on value within the contact's object in the database, which will give the program a new value to compare against within the timing logic.
 
-            // 4. Display one random idea from ideas array
-            UICtrl.displayIdea(ideas);
+    let checkmarks = document.querySelectorAll('.fa-check');
+      checkmarks.forEach(check => {
+        check.addEventListener('click', e => {
+          e.stopPropagation();
+          let itemID = e.target.parentNode.parentNode.id;
 
-            // 5. Arrow interaction
-            UICtrl.transformArrowIcon();
-           };
+          // Need parseInt - otherwise will be updated in database as a string instead of a number
+          let now = parseInt(Date.now() / 3600000);
 
-         var subscribeClearInput = function() {
-            UIController.clearField();
-           };
+          // Update the created_on property in Firestore so that the timing interval starts over
+          db.collection('contacts').doc(`${itemID}`).update({ created_on: now });
 
-    
-- Use of Font Awesome icons within 'New idea' button to rotate 180° upon click
+          // Update the list/UI
+          document.getElementById(`${itemID}`).classList.remove('expired');
+          e.target.style.display = 'none';
 
-        transformArrowIcon: function() {
-            document.getElementById('arrow-icon').classList.toggle('rotated');
-        };
+        })
+      });
