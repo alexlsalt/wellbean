@@ -70,9 +70,7 @@ contactForm.addEventListener('submit', event => {
     // Milliseconds > hours
     data['created_on'] = Date.now() / 3600000;
 
-    db.collection('contacts').doc().set(data).then(() => {
-      console.log('Entered into database');
-    });
+    db.collection('contacts').doc().set(data);
 
     // Clear input fields
     contactForm.reset();
@@ -107,15 +105,16 @@ function renderContact(doc) {
   contactList.appendChild(li);
 
   // deleting data 
-  let cross = document.querySelector('.cross');
-  cross.addEventListener('click', e => {
-    e.stopPropagation();
+  let cross = document.querySelectorAll('.cross');
+  cross.forEach(cross => {
+    cross.addEventListener('click', e => {
+      e.stopPropagation();
 
-    let id = e.target.parentElement.parentElement.getAttribute('id');
-    db.collection('contacts').doc(id).delete();
-    
+      let id = e.target.parentElement.parentElement.getAttribute('id');
+      db.collection('contacts').doc(id).delete();
+    });
   });
-}
+};
 
 
 ////////// Render contacts as soon as they're added to the database
@@ -129,9 +128,8 @@ db.collection('contacts').onSnapshot(snapshot => {
       let li = document.getElementById(change.doc.id);
       contactList.removeChild(li);
     }
-  })
+  });
 });
-
 
 //////////// RESET CONTACT LIST ON LOGOUT
 
@@ -188,7 +186,7 @@ auth.onAuthStateChanged(user => {
           timerExpired();
         }      
       });
-      
+
       /////// Resetting the interval when the checkmark is clicked by updating the created_on property in the database
       let checkmarks = document.querySelectorAll('.fa-check');
       checkmarks.forEach(check => {
