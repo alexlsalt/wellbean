@@ -61,6 +61,11 @@ loginForm.addEventListener('submit', event => {
 
   // Background opacity back to 1
   document.querySelector('#content').style.opacity = 1;
+
+  // Call user to click on button to display all contacts
+  setInterval(() => {
+    displayContactBtn.classList.toggle('green');
+  }, 500)
 });
 
 ///////////////// LOGOUT

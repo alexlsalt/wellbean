@@ -47,16 +47,7 @@ displayContactBtn.addEventListener('click', e => {
   // Reload location (to pull contacts from database)
   location.reload();
   return false;
-
 });
-
-
-// function blinkingButton() {
-//   setInterval(() => {
-//     displayContactBtn.classList.toggle('green');
-//   }, 500)
-// }
-
 
 
 //////////////// ADDING CONTACT TO LIST 
@@ -76,8 +67,8 @@ contactForm.addEventListener('submit', event => {
     data['name'] = contactName;
     data['frequency'] = contactFrequency;
     data['id'] = ID;
-    // Milliseconds > seconds > minutes > hours
-    data['created_on'] = Date.now() / 1000 / 60 / 60;
+    // Milliseconds > hours
+    data['created_on'] = Date.now() / 3600000;
 
     db.collection('contacts').doc().set(data).then(() => {
       console.log('Entered into database');
@@ -123,7 +114,7 @@ function renderContact(doc) {
     let id = e.target.parentElement.parentElement.getAttribute('id');
     db.collection('contacts').doc(id).delete();
     
-  })
+  });
 }
 
 
@@ -139,7 +130,7 @@ db.collection('contacts').onSnapshot(snapshot => {
       contactList.removeChild(li);
     }
   })
-})
+});
 
 
 //////////// RESET CONTACT LIST ON LOGOUT
@@ -158,9 +149,9 @@ logoutButton.addEventListener('click', event => {
 auth.onAuthStateChanged(user => {
   if (user) {
     let userId = auth.currentUser.uid;
-    let now = Date.now() / 3600000;
-    console.log(userId);
+    let now = Date.now() / 3600000; // Milliseconds > hours
     
+    // Query docs in database to pull up only those that match with current user
     db.collection('contacts').where('id', '==', `${userId}`).get()
     .then(snapshot => {
       if (snapshot.empty) {
@@ -171,23 +162,20 @@ auth.onAuthStateChanged(user => {
         let id = doc.id;
         let createdOn = doc.data().created_on;
         let frequency = doc.data().frequency;
-    // Need logic to compare the now variable to the created_on property of each!!
-        console.log(id, '>', createdOn);
 
-        function timerExpired() {
+        function timerExpired() { // This function will update the UI each time the timer expires on each list item
           document.getElementById(`${id}`).classList.add('expired');
           document.getElementById(`${id}`).childNodes[2].insertAdjacentHTML('beforeend', '<i class="fas fa-check"></i>');
         }
 
-        // Testing
-        // TestOne should be red at 8:44pm and then four hours from when checkmark is clicked
-        if (now - createdOn > 4 && frequency == 'Daily') {
-          timerExpired();
-        } else if (now - createdOn > 12 && frequency == 'Twice a Week') {
-          timerExpired();
-        }
+        // Testing purposes only
+        // if (now - createdOn > 4 && frequency == 'Daily') {
+        //   timerExpired();
+        // } else if (now - createdOn > 12 && frequency == 'Twice a Week') {
+        //   timerExpired();
+        // }
       
-
+        // The timing logic for each frequency option
         if (now - createdOn > 24 && frequency == 'Daily') {
           timerExpired();
         } else if (now - createdOn > 84 && frequency == 'Twice a Week') {
@@ -200,6 +188,7 @@ auth.onAuthStateChanged(user => {
           timerExpired();
         }      
       });
+      
       /////// Resetting the interval when the checkmark is clicked by updating the created_on property in the database
       let checkmarks = document.querySelectorAll('.fa-check');
       checkmarks.forEach(check => {
@@ -220,18 +209,8 @@ auth.onAuthStateChanged(user => {
         })
       });
     });
-
-    
-
-
   }
 })
-
-
-//////////// FUNCTIONALITY FOR RESETTING EACH LIST ITEM AFTER IT EXPIRES
-// https://firebase.google.com/docs/firestore/manage-data/add-data#update-data
-// let now = Date.now();
-//db.collection('contacts').doc(`${id}`).update({created_on: `${now}`});
 
 
 
