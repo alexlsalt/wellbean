@@ -58,9 +58,11 @@ program uses that in its logic to test if the time now subtracted by the created
         let createdOn = doc.data().created_on;
         let frequency = doc.data().frequency;
 
-        function timerExpired() { // This function will update the UI each time the timer expires on each list item
+        // This function will update the UI each time the timer expires on each list item
+        function timerExpired() { 
           document.getElementById(`${id}`).classList.add('expired');
-          document.getElementById(`${id}`).childNodes[2].insertAdjacentHTML('beforeend', '<i class="fas fa-check"></i>');
+          document.getElementById(`${id}`).childNodes[2].insertAdjacentHTML('beforeend', 
+          '<i class="fas fa-check"></i>');
         }
        
         // The timing logic for each frequency option
