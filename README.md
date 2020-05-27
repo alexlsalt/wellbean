@@ -10,20 +10,23 @@ are overdue to reach out to each time they log in to the app.
 
 ## About
 
-In April 2020, I felt inspired to develop an app that helped me keep track of which of my loved ones to contact on any given day. I'd often 
-lose track of who I had and hadn't spoken to in a long time, and I wanted to create something that would remove the confusion and just 
-notify me of who of my friends or family would be a good idea to call, based on how much time had passed since I'd last spoken to them.
+In April 2020, I felt inspired to develop an app that helped me keep track of which of my loved ones to contact on any given day. I'd often lose track of who I had and hadn't spoken to in a long time, and I wanted to create something that would remove the confusion and just notify me of who of my friends or family would be a good idea to call, based on how much time had passed since I'd last spoken to them.
+
+### Live Demo
+
+https://www.loom.com/share/8916a2bbe1e74ed2bb5edb36b6310430
 
 ### How it works
 
-The app itself uses Firebase Firestore and Firebase Authentication to store users' contacts in a database. Once users have created an account 
-using an email address and password, they'll have access to the logged in page, where they'll have the option to enter a contact name and 
-reminder frequency. Once that information is submitted, it will immediately show up on the list below the input form, in addition to being 
-added to the database.
+Essentially, the program runs each time a user logs in to compare the present time to the time a contact reminder was created. If the difference between the time now and the time the contact was created exceeds a given number of hours (depending on the desired reminder frequency), the contact's list item will turn red, signalling it's time to reach out to said contact.
 
-Depending on the logged-in user, the program will return only those documents in the database that have an ID property that matches their 
-unique user ID (UID) that they receive at the time their account is created. In other words, upon each contact submission into the input form, the program 
-grabs the user's UID and sets a property of 'id' as that UID within the overall object of the particular contact.
+![Screenshot of Wellbean UI](img/wellbean_timer.png)
+
+The app itself uses Firebase Firestore and Firebase Authentication to store users' contacts in a database. Once users have created an account using an email address and password, they'll have access to the logged in page, where they'll have the option to enter a contact name and reminder frequency. 
+
+Once that information is submitted, it will immediately show up on the list below the input form, in addition to being added to the database.
+
+Depending on the logged-in user, the program will return only those documents in the database that have an ID property that matches their unique user ID (UID) that they receive at the time their account is created. In other words, upon each contact submission into the input form, the program grabs the user's UID and sets a property of 'id' as that UID within the overall object of the particular contact.
 
     const contactName = document.querySelector('#newContact__input').value;
     const contactFrequency = document.querySelector('#newFrequency__input').value;
@@ -42,8 +45,7 @@ grabs the user's UID and sets a property of 'id' as that UID within the overall 
     db.collection('contacts').doc().set(data);
     
 
-Also upon submission, there is also a property called created_on that is set with a timestamp of the present moment using the Date object
-in JavaScript (in hours because milliseconds can become very unruly very quickly). This is an important aspect of the overall timing function of the app.
+Also upon submission, there is also a property called created_on that is set with a timestamp of the present moment using the Date object in JavaScript (in hours because milliseconds can become very unruly very quickly). This is an important aspect of the overall timing function of the app.
 
 Each time the user logs in, another snapshot of the current time is taken (again by using the now() method on the Date object), and the
 program uses that in its logic to test if the time now subtracted by the created_on property is greater than a given number of hours 
@@ -60,9 +62,11 @@ program uses that in its logic to test if the time now subtracted by the created
         let createdOn = doc.data().created_on;
         let frequency = doc.data().frequency;
 
-        function timerExpired() { // This function will update the UI each time the timer expires on each list item
+        // This function will update the UI each time the timer expires on each list item
+        function timerExpired() { 
           document.getElementById(`${id}`).classList.add('expired');
-          document.getElementById(`${id}`).childNodes[2].insertAdjacentHTML('beforeend', '<i class="fas fa-check"></i>');
+          document.getElementById(`${id}`).childNodes[2].insertAdjacentHTML('beforeend', 
+          '<i class="fas fa-check"></i>');
         }
        
         // The timing logic for each frequency option
