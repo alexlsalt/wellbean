@@ -12,6 +12,10 @@ are overdue to reach out to each time they log in to the app.
 
 In April 2020, I felt inspired to develop an app that helped me keep track of which of my loved ones to contact on any given day. I'd often lose track of who I had and hadn't spoken to in a long time, and I wanted to create something that would remove the confusion and just notify me of who of my friends or family would be a good idea to call, based on how much time had passed since I'd last spoken to them.
 
+### Live Demo
+
+https://www.loom.com/share/8916a2bbe1e74ed2bb5edb36b6310430
+
 ### How it works
 
 Essentially, the program runs each time a user logs in to compare the present time to the time a contact reminder was created. If the difference between the time now and the time the contact was created exceeds a given number of hours (depending on the desired reminder frequency), the contact's list item will turn red, signalling it's time to reach out to said contact.
