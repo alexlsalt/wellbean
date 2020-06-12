@@ -145,12 +145,18 @@ logoutButton.addEventListener('click', event => {
 
 
 auth.onAuthStateChanged(user => {
+  console.log('auth', user); 
   if (user) {
+    // update UI for logged in state
+    loggedIn.forEach(el => el.style.display = 'block');
+    loggedOut.forEach(el => el.style.display = 'none');
+
+    // app functionality
     let userId = auth.currentUser.uid;
     let now = Date.now() / 3600000; // Milliseconds > hours
     
     // Query docs in database to pull up only those that match with current user
-    db.collection('contacts').where('id', '==', `${userId}`).get()
+    db.collection('contacts').where('id', '==', userId).get()
     .then(snapshot => {
       if (snapshot.empty) {
         console.log('No matching docs');
@@ -162,8 +168,10 @@ auth.onAuthStateChanged(user => {
         let frequency = doc.data().frequency;
 
         function timerExpired() { // This function will update the UI each time the timer expires on each list item
-          document.getElementById(`${id}`).classList.add('expired');
-          document.getElementById(`${id}`).childNodes[2].insertAdjacentHTML('beforeend', '<i class="fas fa-check"></i>');
+          document.getElementById(id).classList.add('expired');
+          
+          document.getElementById(id).childNodes[2].insertAdjacentHTML('beforeend', '<i class="fas fa-check"></i>');
+
         }
 
         // Testing purposes only
@@ -207,6 +215,10 @@ auth.onAuthStateChanged(user => {
         })
       });
     });
+  } else {
+    // update UI for logged out state
+    loggedIn.forEach(el => el.style.display = 'none');
+    loggedOut.forEach(el => el.style.display = 'block');
   }
 })
 

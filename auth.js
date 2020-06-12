@@ -1,17 +1,6 @@
 // refs for main section based on login/out
 const loggedIn = document.querySelectorAll('.logged-in');
-const loggedOut = document.querySelectorAll('.logged-out');
-
-// tracking state changes based on logged in and logged in states
-auth.onAuthStateChanged(user => {
-  if(user) {  
-    loggedIn.forEach(el => el.style.display = 'block');
-    loggedOut.forEach(el => el.style.display = 'none');
-  } else {
-    loggedIn.forEach(el => el.style.display = 'none');
-    loggedOut.forEach(el => el.style.display = 'block');
-  }
-});
+const loggedOut = document.querySelectorAll('.logged-out'); 
 
 ///////////////// SIGNUP
 
@@ -59,7 +48,7 @@ loginForm.addEventListener('submit', event => {
     loginForm.reset();
   });
 
-  // Background opacity back to 1
+  // Background opacity back to 1 
   document.querySelector('#content').style.opacity = 1;
 
   // Call user to click on button to display all contacts
