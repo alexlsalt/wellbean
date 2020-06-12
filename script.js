@@ -145,7 +145,6 @@ logoutButton.addEventListener('click', event => {
 
 
 auth.onAuthStateChanged(user => {
-  console.log('auth', user); 
   if (user) {
     // update UI for logged in state
     loggedIn.forEach(el => el.style.display = 'block');
