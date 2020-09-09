@@ -98,9 +98,11 @@ function renderContact(doc) {
   frequency.textContent = doc.data().frequency;
   div.innerHTML = '<i class="fas fa-times cross"></i>';
 
+  
   li.appendChild(name);
   li.appendChild(frequency);
   li.appendChild(div);
+  
 
   contactList.appendChild(li);
 
@@ -221,6 +223,23 @@ auth.onAuthStateChanged(user => {
   }
 })
 
+
+//////// EVENT LISTENER TO DISPLAY FREQUENCY (LIST ITEM MIDDLE SECTION) ON LARGER SCREENS AND TO HIDE IT ON SMALLER SCREENS
+
+window.addEventListener('load', e => {
+  let items = document.querySelector('.contact-list').childNodes;
+  let itemsArr = Array.from(items);
+
+  if (window.innerWidth < 505) {
+    itemsArr.forEach(item => {
+      item.childNodes[1].style.display = 'none';
+    }) 
+  } else if (window.innerWidth >= 505) {
+    itemsArr.forEach(item => {
+      item.childNodes[1].style.display = 'block';
+    }) 
+  }
+})
 
 
 
