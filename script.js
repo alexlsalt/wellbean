@@ -226,7 +226,7 @@ auth.onAuthStateChanged(user => {
 
 //////// EVENT LISTENER TO DISPLAY FREQUENCY (LIST ITEM MIDDLE SECTION) ON LARGER SCREENS AND TO HIDE IT ON SMALLER SCREENS
 
-window.addEventListener('load', e => {
+window.addEventListener('resize', e => {
   let items = document.querySelector('.contact-list').childNodes;
   let itemsArr = Array.from(items);
 
