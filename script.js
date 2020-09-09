@@ -86,7 +86,7 @@ contactForm.addEventListener('submit', event => {
 /////////////// CREATE NEW CONTACT AND RENDER ON LIST
 const contactList = document.querySelector('.contact-list');
 
-function renderContact(doc) {
+function renderContact(doc) { 
   let li = document.createElement('li');
   let name = document.createElement('span');
   let frequency = document.createElement('span');

@@ -134,7 +134,7 @@ section h2 {
   border: 4px solid #fff;
   padding: 1rem;
 }
-
+ 
 /* ******CONTACT LIST********* */
 
 .contact-container {
@@ -175,6 +175,14 @@ section h2 {
   padding: 0.5rem;
   display: flex;
   justify-content: space-between;
+}
+
+@media screen and (max-width: 600px) {
+  .contact-list {
+    width: 90%;
+    padding: 0;
+  }
+
 }
 
 .cross {
@@ -280,6 +288,12 @@ button:hover{
 
 #display-contacts-btn {
   margin-top: 1rem;
+}
+
+@media only screen and (max-width: 600px) {
+  button {
+    width: 90%;
+  }
 }
 
 
