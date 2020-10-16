@@ -86,7 +86,7 @@ header nav {
 
 nav ul {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 2fr);
 }
 
 nav li {
@@ -97,6 +97,7 @@ nav li {
   border: 1px solid gray;
   text-transform: uppercase;
   color: gray;
+  width: auto;
 }
 
 nav li:hover {
@@ -115,10 +116,6 @@ nav li:hover {
 
 section {
   grid-area: section;
-  /* background-image: url('wellbean_back.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover; */
   background: #b0c6b7;
   display: grid;
   align-content: center;
@@ -226,7 +223,7 @@ footer h1{
 .modal {
   display: none;
   position: absolute;
-  top: 35%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border: 10px solid lightgray;
@@ -282,6 +279,17 @@ input {
 
 #newContact__input, #newFrequency__input {
   width: 90%;
+}
+
+@media only screen and (max-width: 640px) {
+  .input-field {
+    width: 90%;
+    font-size: 1rem;
+  }
+
+  .submit__btn {
+    width: 90%;
+  }
 }
 
 @media only screen and (max-width: 400px) {

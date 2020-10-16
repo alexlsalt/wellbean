@@ -2,7 +2,7 @@
 const loggedIn = document.querySelectorAll('.logged-in');
 const loggedOut = document.querySelectorAll('.logged-out'); 
 
-///////////////// SIGNUP
+///////////////// SIGNUP 
 
 // get reference to signup form
 const signupForm = document.querySelector('#signup-form');
